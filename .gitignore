@@ -1,0 +1,10 @@
+/build*/
+/dist/
+/.vs/
+/.idea/
+*.user
+__pycache__/
+*.pyc
+.env
+.env.*
+discord.cfg

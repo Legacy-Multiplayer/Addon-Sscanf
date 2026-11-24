@@ -1,0 +1,4 @@
+{
+  "ready": true,
+  "reason": "No known source-level blocker. Linux CI and live server validation remain required before publication."
+}
