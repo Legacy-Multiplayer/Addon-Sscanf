@@ -40,7 +40,7 @@ Release packages include generated `.d.lua` signatures for autocomplete and argu
 Definitions are editor-only; do not execute them as server scripts.
 
 ```text
-lmp install Legacy-Multiplayer/Addon-Sscanf:<version>
+lmp install Legacy-Multiplayer/Addon-Sscanf:v1.0.1
 ```
 
 LMP installs the native addon in `addons/` and its signatures in `.lmp/definitions/`.
