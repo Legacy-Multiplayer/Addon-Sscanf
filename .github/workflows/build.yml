@@ -30,6 +30,9 @@ jobs:
         with:
           submodules: recursive
           persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Install Lua signature generator
         run: python -m pip install -r SDK/tools/requirements.txt
       - name: Install Windows compiler analysis runtime
