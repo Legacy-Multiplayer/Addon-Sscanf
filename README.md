@@ -33,3 +33,29 @@ For an existing checkout, run `git submodule update --init --recursive`. The SDK
 Pushes to `main` and pull requests build Windows x86 and Linux x86, run offline tests, and upload packages under **Actions → Build plugins → Artifacts**. Packages include the library, documentation, source/SDK revision manifest and a SHA-256 checksum. Windows produces `.dll`; Linux produces `.so`. A successful compilation does not prove live server behavior.
 
 To prepare a release, manually run **Build plugins** on `main` with a new tag such as `v1.0.0`. Both builds must pass before a **draft** can be created. Nothing publishes automatically.
+
+## Lua Integration and LMP
+
+Release packages include generated `.d.lua` signatures for autocomplete and argument hints.
+Definitions are editor-only; do not execute them as server scripts.
+
+```text
+lmp install Legacy-Multiplayer/Addon-Sscanf:<version>
+```
+
+LMP installs the native addon in `addons/` and its signatures in `.lmp/definitions/`.
+Use `--platform linux` or `--platform both` when preparing another target.
+
+For source builds, install the signature generator before configuring CMake:
+
+```text
+python -m pip install -r SDK/tools/requirements.txt
+```
+
+On newer Visual Studio toolsets, set `LIBCLANG_FILE` to a compatible LLVM `libclang.dll`
+when the bundled libclang does not support those headers. `SDK_GENERATE_LUA=OFF` is
+for binary-only local builds; releases require generated signatures.
+
+For manual installation, copy the generated `.d.lua` beside the DLL/SO in
+`addons/` to enable Lua Integration hints. It is an editor definition, not a
+server script.

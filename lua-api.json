@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "sscanf": {
+      "parameters": [
+        { "name": "input", "type": "string|nil" },
+        { "name": "format", "type": "string" }
+      ],
+      "returns": "boolean, any ..."
+    }
+  }
+}

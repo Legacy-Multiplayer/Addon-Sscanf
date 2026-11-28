@@ -30,6 +30,16 @@ jobs:
         with:
           submodules: recursive
           persist-credentials: false
+      - name: Install Lua signature generator
+        run: python -m pip install -r SDK/tools/requirements.txt
+      - name: Install Windows compiler analysis runtime
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          choco install llvm --version=21.1.8 --yes --no-progress --allow-downgrade
+          if ($LASTEXITCODE -notin 0, 3010) { exit $LASTEXITCODE }
+          $global:LASTEXITCODE = 0
+          'LIBCLANG_FILE=C:\Program Files\LLVM\bin\libclang.dll' >> $env:GITHUB_ENV
       - name: Install Linux multilib
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
@@ -45,6 +55,8 @@ jobs:
         run: ctest --test-dir build -C Release --output-on-failure --no-tests=error
       - name: Package and verify architecture
         run: python .github/scripts/package.py ${{ matrix.platform }}
+      - name: Package editor definitions and LMP metadata
+        run: python SDK/tools/lmp_release.py --package dist --platform ${{ matrix.platform }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: plugin-${{ matrix.platform }}
@@ -61,6 +73,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          submodules: recursive
           persist-credentials: false
       - name: Verify release readiness
         run: python .github/scripts/release_check.py
@@ -69,6 +82,10 @@ jobs:
           pattern: plugin-*
           path: packages
           merge-multiple: true
+      - name: Assemble LMP release descriptor
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python SDK/tools/lmp_release.py --merge packages --tag "$RELEASE_TAG"
       - name: Create a draft only
         env:
           GH_TOKEN: ${{ github.token }}
